@@ -1,0 +1,1126 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPDP Compliance Assessment System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1400px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #6b7280;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: #1e40af;
+        }
+
+        .tab.active {
+            color: #1e40af;
+            border-bottom-color: #1e40af;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 0.95em;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);
+            transition: width 0.5s;
+        }
+
+        .stage-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .stage-indicator::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #e5e7eb;
+            z-index: 0;
+        }
+
+        .stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stage-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #9ca3af;
+            transition: all 0.3s;
+        }
+
+        .stage.active .stage-circle {
+            background: #3b82f6;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .stage.completed .stage-circle {
+            background: #10b981;
+            color: white;
+        }
+
+        .stage-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .stage.active .stage-label {
+            color: #1e40af;
+        }
+
+        .question-card {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        .question-card:hover {
+            border-color: #3b82f6;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 15px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-option {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .radio-option:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            color: #1e40af;
+        }
+
+        .radio-option.selected {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .report-section {
+            text-align: center;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px;
+            border-radius: 20px;
+            margin: 30px 0;
+        }
+
+        .score-number {
+            font-size: 5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .score-label {
+            font-size: 1.5em;
+            opacity: 0.95;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin: 20px 0;
+        }
+
+        .status-compliant {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-partial {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-non-compliant {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .recommendations {
+            text-align: left;
+            margin-top: 40px;
+        }
+
+        .recommendation-item {
+            background: white;
+            border-left: 4px solid #3b82f6;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .priority-high {
+            border-left-color: #ef4444;
+        }
+
+        .priority-medium {
+            border-left-color: #f59e0b;
+        }
+
+        .priority-low {
+            border-left-color: #10b981;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .priority-high-badge {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .priority-medium-badge {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .priority-low-badge {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .btn, .tabs, .header {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 DPDP Compliance Assessment System</h1>
+            <p>Digital Personal Data Protection Act, 2023 - Compliance Eligibility Checker</p>
+        </div>
+
+        <div class="content">
+            <div id="alertContainer"></div>
+
+            <!-- Stage Indicator -->
+            <div class="stage-indicator" id="stageIndicator">
+                <div class="stage active" data-stage="1">
+                    <div class="stage-circle">1</div>
+                    <div class="stage-label">Registration</div>
+                </div>
+                <div class="stage" data-stage="2">
+                    <div class="stage-circle">2</div>
+                    <div class="stage-label">Profile</div>
+                </div>
+                <div class="stage" data-stage="3">
+                    <div class="stage-circle">3</div>
+                    <div class="stage-label">Assessment</div>
+                </div>
+                <div class="stage" data-stage="4">
+                    <div class="stage-circle">4</div>
+                    <div class="stage-label">Report</div>
+                </div>
+            </div>
+
+            <!-- Login/Register Tabs -->
+            <div class="tabs" id="authTabs">
+                <button class="tab active" onclick="showAuthSection('login')">Login</button>
+                <button class="tab" onclick="showAuthSection('register')">Register</button>
+            </div>
+
+            <!-- Login Section -->
+            <div id="loginSection" class="section active">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required placeholder="Enter your password">
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Register Section -->
+            <div id="registerSection" class="section">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="organizationName">Organization Name *</label>
+                        <input type="text" id="organizationName" required placeholder="ABC Private Limited">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" required placeholder="contact@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" required placeholder="+91-9876543210">
+                    </div>
+                    <div class="form-group">
+                        <label for="gstin">GSTIN *</label>
+                        <input type="text" id="gstin" required placeholder="29ABCDE1234F1Z5">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password *</label>
+                        <input type="password" id="password" required placeholder="Create a strong password">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password *</label>
+                        <input type="password" id="confirmPassword" required placeholder="Re-enter password">
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Register Organization</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Profile Section -->
+            <div id="profileSection" class="section">
+                <h2 style="margin-bottom: 20px;">Organization Profile</h2>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="businessType">Business Type *</label>
+                        <select id="businessType" required>
+                            <option value="">Select Business Type</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Finance">Finance & Banking</option>
+                            <option value="E-commerce">E-commerce</option>
+                            <option value="Education">Education</option>
+                            <option value="Manufacturing">Manufacturing</option>
+                            <option value="Retail">Retail</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employeeCount">Number of Employees *</label>
+                        <select id="employeeCount" required>
+                            <option value="">Select Range</option>
+                            <option value="less_than_10">Less than 10</option>
+                            <option value="10_to_50">10 to 50</option>
+                            <option value="50_to_100">50 to 100</option>
+                            <option value="100_to_500">100 to 500</option>
+                            <option value="more_than_500">More than 500</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dataVolume">Volume of Personal Data Processed *</label>
+                        <select id="dataVolume" required>
+                            <option value="">Select Volume</option>
+                            <option value="less_than_1k">Less than 1,000 records</option>
+                            <option value="1k_to_10k">1,000 to 10,000 records</option>
+                            <option value="10k_to_100k">10,000 to 1,00,000 records</option>
+                            <option value="100k_to_1_million">1,00,000 to 10,00,000 records</option>
+                            <option value="more_than_1_million">More than 10,00,000 records</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Types of Personal Data Collected *</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="data1" value="Contact Information">
+                                <label for="data1">Contact Information</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="data2" value="Financial Data">
+                                <label for="data2">Financial Data</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="data3" value="Health Data">
+                                <label for="data3">Health Data</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="data4" value="Biometric Data">
+                                <label for="data4">Biometric Data</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="data5" value="Location Data">
+                                <label for="data5">Location Data</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="data6" value="Children Data">
+                                <label for="data6">Children's Data</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sensitiveData">Do you process Sensitive Personal Data? *</label>
+                        <select id="sensitiveData" required>
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dataLocation">Primary Data Storage Location *</label>
+                        <select id="dataLocation" required>
+                            <option value="">Select Location</option>
+                            <option value="India">India</option>
+                            <option value="USA">USA</option>
+                            <option value="Europe">Europe</option>
+                            <option value="Asia_Pacific">Asia Pacific</option>
+                            <option value="Multiple">Multiple Locations</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="thirdPartySharing">Do you share data with third parties? *</label>
+                        <select id="thirdPartySharing" required>
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="crossBorderTransfer">Do you transfer data across borders? *</label>
+                        <select id="crossBorderTransfer" required>
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Save Profile & Continue</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Assessment Section -->
+            <div id="assessmentSection" class="section">
+                <h2 style="margin-bottom: 20px;">DPDP Compliance Assessment</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="assessmentProgress" style="width: 0%"></div>
+                </div>
+                <form id="assessmentForm">
+                    <div id="questionsContainer"></div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Submit Assessment</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Report Section -->
+            <div id="reportSection" class="section">
+                <div class="report-section">
+                    <div class="score-display">
+                        <div class="score-number" id="scoreNumber">0%</div>
+                        <div class="score-label">Compliance Score</div>
+                    </div>
+
+                    <div id="statusBadge" class="status-badge">Loading...</div>
+
+                    <div id="sdfInfo" style="margin: 20px 0; padding: 20px; background: #f9fafb; border-radius: 12px;">
+                        <h3>Entity Classification</h3>
+                        <p id="sdfText" style="font-size: 1.1em; font-weight: 600; margin-top: 10px;"></p>
+                    </div>
+
+                    <div class="recommendations">
+                        <h2>Priority Remediation Actions</h2>
+                        <div id="recommendationsList"></div>
+                    </div>
+
+                    <div class="btn-group" style="justify-content: center; margin-top: 40px;">
+                        <button onclick="downloadPDF()" class="btn btn-primary">📄 Download PDF Report</button>
+                        <button onclick="window.print()" class="btn btn-secondary">🖨️ Print Report</button>
+                        <button onclick="startNewAssessment()" class="btn btn-secondary">🔄 New Assessment</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div id="loadingSection" class="loading">
+                <div class="spinner"></div>
+                <p>Processing your data...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStage = 1;
+        let authToken = null;
+        let currentOrgId = null;
+        let currentReportId = null;
+
+        const API_BASE = 'http://localhost:5000/api';
+
+        const questions = [
+            {id: 'q1', category: 'Consent Management', text: 'Do you obtain explicit consent before collecting personal data?'},
+            {id: 'q2', category: 'Consent Management', text: 'Do you provide a clear notice explaining the purpose of data collection?'},
+            {id: 'q3', category: 'Consent Management', text: 'Can data principals easily withdraw their consent?'},
+            {id: 'q4', category: 'Data Principal Rights', text: 'Can data principals access their personal data upon request?'},
+            {id: 'q5', category: 'Data Principal Rights', text: 'Do you allow data principals to correct or update their data?'},
+            {id: 'q6', category: 'Data Principal Rights', text: 'Do you delete personal data upon request (Right to be Forgotten)?'},
+            {id: 'q7', category: 'Data Principal Rights', text: 'Do you provide data portability options?'},
+            {id: 'q8', category: 'Data Security', text: 'Do you encrypt sensitive personal data?'},
+            {id: 'q9', category: 'Data Security', text: 'Do you have access control mechanisms in place?'},
+            {id: 'q10', category: 'Data Security', text: 'Do you conduct regular security audits?'},
+            {id: 'q11', category: 'Data Retention', text: 'Do you have a documented data retention policy?'},
+            {id: 'q12', category: 'Data Retention', text: 'Do you delete data automatically after the retention period?'},
+            {id: 'q13', category: 'Data Processing', text: 'Do you have Data Processing Agreements with third-party processors?'},
+            {id: 'q14', category: 'Data Processing', text: 'Do you audit your data processors regularly?'},
+            {id: 'q15', category: 'Children Data', text: 'If you process children\'s data, do you obtain verifiable parental consent?'},
+            {id: 'q16', category: 'Breach Management', text: 'Do you have a data breach notification process?'},
+            {id: 'q17', category: 'Breach Management', text: 'Do you have an incident response plan?'},
+            {id: 'q18', category: 'Governance', text: 'Have you appointed a Data Protection Officer (DPO)?'},
+            {id: 'q19', category: 'Governance', text: 'Do you maintain records of data processing activities?'},
+            {id: 'q20', category: 'Governance', text: 'Do you conduct Data Protection Impact Assessments (DPIA)?'},
+            {id: 'q21', category: 'Cross-border Transfer', text: 'Do you ensure adequate safeguards for international data transfers?'},
+            {id: 'q22', category: 'Transparency', text: 'Is your privacy policy publicly available and up-to-date?'},
+            {id: 'q23', category: 'Accountability', text: 'Do you monitor compliance with data protection requirements?'},
+            {id: 'q24', category: 'Training', text: 'Do you provide regular DPDP training to employees?'},
+            {id: 'q25', category: 'Compliance', text: 'Do you have a grievance redressal mechanism for data principals?'}
+        ];
+
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        function showAuthSection(section) {
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('registerSection').classList.remove('active');
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            
+            if (section === 'login') {
+                document.getElementById('loginSection').classList.add('active');
+                document.querySelectorAll('.tab')[0].classList.add('active');
+            } else {
+                document.getElementById('registerSection').classList.add('active');
+                document.querySelectorAll('.tab')[1].classList.add('active');
+            }
+        }
+
+        function updateStage(stage) {
+            currentStage = stage;
+            document.querySelectorAll('.stage').forEach((el, idx) => {
+                el.classList.remove('active', 'completed');
+                if (idx + 1 < stage) el.classList.add('completed');
+                if (idx + 1 === stage) el.classList.add('active');
+            });
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            if (sectionId === 'profileSection') {
+                document.getElementById('authTabs').style.display = 'none';
+                updateStage(2);
+            } else if (sectionId === 'assessmentSection') {
+                updateStage(3);
+                renderQuestions();
+            } else if (sectionId === 'reportSection') {
+                updateStage(4);
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, password})
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.token;
+                    currentOrgId = data.org_id;
+                    showAlert('Login successful!', 'success');
+                    showSection('profileSection');
+                } else {
+                    showAlert(data.error || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Connection error: ' + error.message, 'error');
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match', 'error');
+                return;
+            }
+
+            const formData = {
+                organizationName: document.getElementById('organizationName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                gstin: document.getElementById('gstin').value,
+                password: password
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/register`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.token;
+                    currentOrgId = data.org_id;
+                    showAlert('Registration successful!', 'success');
+                    setTimeout(() => showSection('profileSection'), 1000);
+                } else {
+                    showAlert(data.error || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Connection error: ' + error.message, 'error');
+            }
+        });
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const dataTypes = [];
+            document.querySelectorAll('.checkbox-item input:checked').forEach(cb => {
+                dataTypes.push(cb.value);
+            });
+
+            const profileData = {
+                businessType: document.getElementById('businessType').value,
+                employeeCount: document.getElementById('employeeCount').value,
+                dataVolume: document.getElementById('dataVolume').value,
+                dataTypes: dataTypes,
+                sensitiveData: document.getElementById('sensitiveData').value,
+                dataLocation: document.getElementById('dataLocation').value,
+                thirdPartySharing: document.getElementById('thirdPartySharing').value,
+                crossBorderTransfer: document.getElementById('crossBorderTransfer').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/profile`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(profileData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert(`Profile saved! SDF Score: ${data.sdf_score} - ${data.is_sdf ? 'Classified as SDF' : 'Data Fiduciary'}`, 'success');
+                    setTimeout(() => showSection('assessmentSection'), 1500);
+                } else {
+                    showAlert(data.error || 'Failed to save profile', 'error');
+                }
+            } catch (error) {
+                showAlert('Connection error: ' + error.message, 'error');
+            }
+        });
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <span class="question-number">Question ${index + 1}</span>
+                    <div class="question-text">${q.text}</div>
+                    <div class="radio-group">
+                        <div class="radio-option" onclick="selectOption('${q.id}', 'Yes', this)">
+                            <input type="radio" name="${q.id}" value="Yes" id="${q.id}_yes">
+                            <label>✅ Yes</label>
+                        </div>
+                        <div class="radio-option" onclick="selectOption('${q.id}', 'Partial', this)">
+                            <input type="radio" name="${q.id}" value="Partial" id="${q.id}_partial">
+                            <label>⚠️ Partial</label>
+                        </div>
+                        <div class="radio-option" onclick="selectOption('${q.id}', 'No', this)">
+                            <input type="radio" name="${q.id}" value="No" id="${q.id}_no">
+                            <label>❌ No</label>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectOption(questionId, value, element) {
+            // Remove selected class from siblings
+            element.parentElement.querySelectorAll('.radio-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Check the radio button
+            document.getElementById(`${questionId}_${value.toLowerCase()}`).checked = true;
+            
+            // Update progress
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = questions.length;
+            const answered = questions.filter(q => 
+                document.querySelector(`input[name="${q.id}"]:checked`)
+            ).length;
+            
+            const percentage = (answered / total) * 100;
+            document.getElementById('assessmentProgress').style.width = percentage + '%';
+        }
+
+        document.getElementById('assessmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const answers = {};
+            let allAnswered = true;
+
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="${q.id}"]:checked`);
+                if (selected) {
+                    answers[q.id] = selected.value;
+                } else {
+                    allAnswered = false;
+                }
+            });
+
+            if (!allAnswered) {
+                showAlert('Please answer all questions before submitting', 'error');
+                return;
+            }
+
+            document.getElementById('loadingSection').classList.add('active');
+            document.getElementById('assessmentSection').classList.remove('active');
+
+            try {
+                const response = await fetch(`${API_BASE}/assessment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({answers})
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentReportId = data.report_id;
+                    await loadReport(data.report_id);
+                } else {
+                    document.getElementById('loadingSection').classList.remove('active');
+                    showAlert(data.error || 'Assessment submission failed', 'error');
+                }
+            } catch (error) {
+                document.getElementById('loadingSection').classList.remove('active');
+                showAlert('Connection error: ' + error.message, 'error');
+            }
+        });
+
+        async function loadReport(reportId) {
+            try {
+                const response = await fetch(`${API_BASE}/report/${reportId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const report = await response.json();
+                
+                if (response.ok) {
+                    displayReport(report);
+                    document.getElementById('loadingSection').classList.remove('active');
+                    showSection('reportSection');
+                } else {
+                    showAlert('Failed to load report', 'error');
+                }
+            } catch (error) {
+                showAlert('Connection error: ' + error.message, 'error');
+            }
+        }
+
+        function displayReport(report) {
+            // Display score
+            document.getElementById('scoreNumber').textContent = report.score + '%';
+            
+            // Display status badge
+            const statusBadge = document.getElementById('statusBadge');
+            statusBadge.textContent = report.status;
+            statusBadge.className = 'status-badge';
+            
+            if (report.score >= 80) {
+                statusBadge.classList.add('status-compliant');
+            } else if (report.score >= 50) {
+                statusBadge.classList.add('status-partial');
+            } else {
+                statusBadge.classList.add('status-non-compliant');
+            }
+            
+            // Display SDF info
+            const sdfText = report.is_sdf 
+                ? `✅ Significant Data Fiduciary (SDF) - Score: ${report.sdf_score}/15`
+                : `ℹ️ Data Fiduciary - Score: ${report.sdf_score}/15`;
+            document.getElementById('sdfText').textContent = sdfText;
+            
+            // Display recommendations
+            const recList = document.getElementById('recommendationsList');
+            recList.innerHTML = '';
+            
+            report.recommendations.forEach((rec, index) => {
+                const item = document.createElement('div');
+                item.className = `recommendation-item priority-${rec.priority.toLowerCase()}`;
+                item.innerHTML = `
+                    <span class="priority-badge priority-${rec.priority.toLowerCase()}-badge">${rec.priority} Priority</span>
+                    <div style="font-weight: 600; margin-bottom: 5px;">${rec.category}</div>
+                    <div>${rec.action}</div>
+                `;
+                recList.appendChild(item);
+            });
+        }
+
+        async function downloadPDF() {
+            if (!currentReportId) {
+                showAlert('No report available to download', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/report/${currentReportId}/pdf`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `DPDP_Compliance_Report_${currentReportId}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    showAlert('PDF downloaded successfully!', 'success');
+                } else {
+                    showAlert('Failed to download PDF', 'error');
+                }
+            } catch (error) {
+                showAlert('Download error: ' + error.message, 'error');
+            }
+        }
+
+        function startNewAssessment() {
+            if (confirm('Start a new assessment? This will take you back to the profile section.')) {
+                document.getElementById('assessmentForm').reset();
+                document.getElementById('assessmentProgress').style.width = '0%';
+                showSection('profileSection');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStage(1);
+        });
+    </script>
+</body>
+</html>

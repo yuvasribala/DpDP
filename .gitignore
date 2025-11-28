@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+.env
+mongodb_backups/
+*.log
+.DS_Store
